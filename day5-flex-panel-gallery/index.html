@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flex Panels</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC' rel='stylesheet' type='text/css'>
+  <link rel="icon" href="https://fav.farm/🔥" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=New+Amsterdam&family=Seymour+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <audio id="bg-music" src="chemicals.mp3" preload="auto"></audio>
+  <style>
+    html {
+      box-sizing: border-box;
+      background: #ffc600;
+      font-family: "New Amsterdam", sans-serif;
+      font-size: 20px;
+      font-style: normal; 
+      font-weight: 200;
+    }
+
+    .new-amsterdam-regular {
+    font-family: "New Amsterdam", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
+    .panels {
+      min-height: 100vh;
+      overflow: hidden;
+      /* makes panels go side by side - also visit flexbox.io */
+      display: flex;
+    }
+
+    .panel {
+      background: #000000;
+      box-shadow: inset 0 0 0 5px rgba(1, 0, 0, 0.1);
+      color: rgb(198, 189, 189);
+      text-align: center;
+      align-items: center;
+      /* Safari transitionend event.propertyName === flex */
+      /* Chrome + FF transitionend event.propertyName === flex-grow */
+      transition:
+        font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
+        flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
+        background 0.2s;
+      font-size: 20px;
+      background-size: cover;
+      background-position: center;
+      /*set flex to 1 to evenly distribute the extra space among the panels*/
+      flex: 1; 
+      justify-content: center; 
+      align-items: center; 
+      display: flex; /*flex container is panels but flex item is panel*/
+      /*we also want to make item a flex panel*/
+      /*an element in CSS can be both a flex item and a flex container*/
+      flex-direction: column; /*stacks the text vertically*/
+    }
+
+    .panel1 { background-image: url('background1.jpg');}
+    .panel2 { background-image:url('background2.jpg'); }
+    .panel3 { background-image:url('bakground3.jpg'); }
+    .panel4 { background-image:url('background4.jpg'); }
+    .panel5 { background-image:url('background5.jpg'); }
+
+    /* Flex Children */
+    .panel > * {
+      margin: 0;
+      width: 100%;
+      transition: transform 0.5s;
+      flex: 1 0 auto; /*evenly distributes extra space among panels with text */
+      /*these three lines align the text within the center of each panel*/
+      display: flex; /*brings text to left*/
+      justify-content: center;/*re-centers text*/
+      align-items: center; /*centers text vertically*/
+    }
+
+    /*brings all of the first children off screen (upper portion of each column)*/
+    .panel > *:first-child { transform: translateY(-100%);} 
+    .panel.open-active > *:first-child { transform: translateY(0); }
+    .panel > *:last-child { transform: translateY(100%);} 
+    .panel.open-active > *:last-child { transform: translateY(0); }
+
+    .panel p {
+      text-transform: uppercase;
+      font-family: 'New Amsterdam', sans-serif;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.72), 0 0 14px rgba(0, 0, 0, 0.45);
+      font-size: 2em;
+    }
+
+    .panel p:nth-child(2) {
+      font-size: 4em;
+    }
+
+    .panel.open {
+      flex: 5; 
+      /*when the panel has class open, it will take up 5 times the extra room
+      compared to the regular panels with flex of 1*/
+      font-size: 30px;
+    }
+
+  </style>
+
+
+  <div class="panels">
+    <div class="panel panel1">
+      <p>Listen To</p>
+      <p>Music</p>
+      <p>Everyday</p>
+    </div>
+    <div class="panel panel2">
+      <p>Let</p>
+      <p>Sounds</p>
+      <p>Breathe</p>
+    </div>
+    <div class="panel panel3">
+      <p>Listen</p>
+      <p>Better</p>
+      <p>Together</p>
+    </div>
+    <div class="panel panel4">
+      <p>Dance</p>
+      <p>With</p>
+      <p>Friends</p>
+    </div>
+    <div class="panel panel5">
+      <p>Hold</p>
+      <p>You</p>
+      <p>Close</p>
+    </div>
+  </div>
+
+  <script>
+
+    /*background music*/
+    const music = document.getElementById('bg-music'); 
+
+    /*add event listener click
+        when we click, we add class of open to the panel
+        what happens when we unclick?
+    */
+
+   //get node list of all the singular panels 
+    const panels = document.querySelectorAll('.panel'); 
+
+    //toggle class of open when panel gets clicked
+    function toggleOpen() {
+        this.classList.toggle('open'); 
+    }
+
+    //toggle text to fall in from top and bottom
+    function toggleActive(e) {
+        //some browsers have slightly different names (flex-grow, flex) so just check for flex
+        if (e.propertyName.includes('flex')) {
+            this.classList.toggle('open-active')
+        }
+    }
+
+    function playMusicOnce() {
+        console.log('playing music');
+        music.play().catch((e) => {
+            console.warn('Autoplay prevented:', e);
+        });
+        document.removeEventListener('click', playMusicOnce);
+    }
+
+    //listen for a click on each panel
+    panels.forEach(panel => panel.addEventListener('click', toggleOpen)); 
+    panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
+    document.addEventListener('click', playMusicOnce);
+  </script>
+</body>
+</html>
